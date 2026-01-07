@@ -1,177 +1,182 @@
-# Product Price Comparison System - Web Application
+# Product Price Comparison System
 
-A modern, interactive web application built with Streamlit for comparing product prices across multiple shops.
+A comprehensive Python system to compare product prices across multiple shops, identify the cheapest and most expensive sellers, and visualize price differences clearly.
 
-## 🚀 Quick Start
+## Features
 
-### Installation
+### Data Cleaning
+- Handles missing prices automatically
+- Converts prices to numeric values
+- Removes invalid or duplicate records
+- Validates required columns
 
-1. Install all required packages:
+### Filtering
+- Filter by product name (case-insensitive partial match)
+- Filter by shop name (case-insensitive partial match)
+- Filter by price range (min/max)
+
+### Price Comparison
+For each product, the system identifies:
+- **Cheapest seller** and price
+- **Most expensive seller** and price
+- **Minimum price**
+- **Maximum price**
+- **Average price**
+- **Price difference** (max - min)
+- **Standard deviation** of prices
+
+### Statistics
+Provides comprehensive statistics with clear explanations:
+- Mean (average price)
+- Minimum (lowest price)
+- Maximum (highest price)
+- Standard deviation (price variability)
+- Median (middle value)
+- Total products, shops, and records
+
+### Visualization
+- **Bar Chart**: Compares prices of a single product across shops
+  - Highlights cheapest price in green
+  - Highlights most expensive price in red
+  - Shows all prices with value labels
+- **Boxplot**: Shows price distribution per product (optional)
+
+## Installation
+
+1. Install required packages:
 ```bash
 pip install -r requirements.txt
 ```
 
-### Running the Web App
+## Usage
 
-Simply run:
-```bash
-streamlit run app.py
+### Basic Usage
+
+```python
+from price_comparison_system import PriceComparisonSystem
+
+# Load data from CSV
+system = PriceComparisonSystem(data_path='product_prices.csv')
+
+# Or use a DataFrame directly
+system = PriceComparisonSystem(df=your_dataframe)
+
+# Get overall statistics
+stats = system.get_statistics()
+system.print_statistics(stats)
+
+# Compare prices for all products
+comparison_df = system.compare_prices()
+system.print_comparison_summary(comparison_df)
+
+# Visualize a specific product
+system.plot_product_comparison('P001')
 ```
 
-The app will automatically open in your default web browser at `http://localhost:8501`
+### Filtering Examples
 
-## ✨ Features
+```python
+# Filter by product name
+filtered = system.filter_data(product_name='Laptop')
 
-### 📊 Data Management
-- **Upload CSV**: Upload your own product price data
-- **Sample Data**: Load pre-generated sample data for testing
-- **Automatic Data Cleaning**: Handles missing values, invalid prices, and duplicates
+# Filter by shop name
+filtered = system.filter_data(shop_name='TechMart')
 
-### 🔍 Interactive Filtering
-- Filter by **Product Name** (dropdown selection)
-- Filter by **Shop Name** (dropdown selection)
-- Filter by **Price Range** (slider)
-- All filters work together seamlessly
+# Filter by price range
+filtered = system.filter_data(price_min=50, price_max=200)
 
-### 📈 Real-time Statistics
-- **Mean Price**: Average across all products
-- **Min/Max Price**: Lowest and highest prices
-- **Standard Deviation**: Price variability measure
-- **Total Products, Shops, Records**: Dataset overview
+# Combine filters
+filtered = system.filter_data(
+    product_name='Laptop',
+    price_min=1000,
+    price_max=1500
+)
 
-### 📊 Visualizations
-- **Bar Charts**: Compare prices for individual products
-  - Green bars = Cheapest price
-  - Red bars = Most expensive price
-  - Blue bars = Other shops
-- **Boxplots**: Price distribution across all products
+# Analyze filtered data
+comparison_df = system.compare_prices(filtered)
+```
 
-### 💾 Data Export
-- View raw filtered data
-- Download filtered data as CSV
+### Running the Main Script
 
-## 📋 CSV Format
+```bash
+python price_comparison_system.py
+```
 
-Your CSV file should contain these columns:
+This will:
+1. Load data from `product_prices.csv` (or create sample data if not found)
+2. Display overall statistics
+3. Show price comparison summary for all products
+4. Generate visualizations
 
-| Column | Description | Example |
-|--------|-------------|---------|
-| `product_id` | Unique product identifier | P001 |
-| `product_name` | Name of the product | Laptop Pro 15 |
-| `shop_name` | Name of the shop/store | TechMart |
-| `price` | Product price (numeric) | 1199.99 |
+## Input Data Format
 
-### Example CSV:
+The system expects a CSV file or DataFrame with the following columns:
+
+- `product_id`: Unique identifier for each product
+- `product_name`: Name of the product
+- `shop_name`: Name of the shop/store
+- `price`: Price of the product (numeric)
+
+Example:
 ```csv
 product_id,product_name,shop_name,price
 P001,Laptop Pro 15,TechMart,1199.99
 P001,Laptop Pro 15,ElectroWorld,1249.50
 P002,Wireless Mouse,TechMart,24.99
-P002,Wireless Mouse,GadgetHub,26.50
 ```
 
-## 🎯 Usage Guide
+## Output
 
-### Step 1: Load Data
-1. Open the sidebar (click the arrow on the left)
-2. Choose either:
-   - **Upload CSV**: Click "Browse files" and select your CSV
-   - **Use Sample Data**: Click "Load Sample Data"
-3. Click the load button
+### Console Output
+- Data cleaning summary
+- Overall statistics with explanations
+- Price comparison summary for each product showing:
+  - Cheapest shop and price
+  - Most expensive shop and price
+  - Price difference
+  - Average price and standard deviation
 
-### Step 2: Apply Filters (Optional)
-- Select a product from the dropdown
-- Select a shop from the dropdown
-- Adjust the price range slider
-- Click "Apply Filters"
+### Visualizations
+- Bar charts saved or displayed
+- Boxplots showing price distributions
 
-### Step 3: Explore Results
-- View overall statistics in the metrics cards
-- Check the price comparison table
-- Select a product to see detailed visualizations
-- Expand "View Raw Data" to see the filtered dataset
+## Code Quality
 
-### Step 4: Export Data (Optional)
-- Click "View Raw Data" expander
-- Click "Download Filtered Data as CSV"
+- **Modular Design**: Clean separation of concerns with a class-based structure
+- **Clear Variable Names**: Self-documenting code
+- **Inline Comments**: Explains logic and functionality
+- **Type Hints**: Improves code readability and IDE support
+- **Error Handling**: Graceful handling of missing data and edge cases
+- **Reproducible**: Uses random seeds for sample data generation
 
-## 🖥️ System Requirements
+## Statistics Explained
 
-- Python 3.8 or higher
-- 4GB RAM minimum
-- Modern web browser (Chrome, Firefox, Edge, Safari)
+- **Mean**: Average price across all products and shops
+- **Minimum**: Lowest price found in the entire dataset
+- **Maximum**: Highest price found in the entire dataset
+- **Standard Deviation**: Measure of price variability (higher = more price variation)
+- **Median**: Middle value when all prices are sorted
+- **Price Difference**: Range between cheapest and most expensive price for a product
 
-## 📦 Dependencies
+## Example Output
 
-- **streamlit**: Web application framework
-- **pandas**: Data manipulation
-- **numpy**: Numerical operations
-- **matplotlib**: Plotting library
-- **seaborn**: Statistical visualization
+```
+================================================================================
+PRICE COMPARISON SUMMARY
+================================================================================
 
-## 🔧 Troubleshooting
-
-### App won't start
-- Make sure all dependencies are installed: `pip install -r requirements.txt`
-- Check Python version: `python --version` (should be 3.8+)
-
-### CSV upload fails
-- Verify your CSV has the required columns: `product_id`, `product_name`, `shop_name`, `price`
-- Check that price column contains numeric values
-- Ensure CSV is properly formatted (no special characters in headers)
-
-### No data showing after filtering
-- Reset filters by selecting "All" for product and shop
-- Adjust price range slider to include your data
-- Check that your data matches the filter criteria
-
-### Visualizations not displaying
-- Make sure you have data loaded
-- Select a product from the dropdown
-- Check browser console for errors (F12)
-
-## 🎨 Customization
-
-The web app uses Streamlit's default theme. You can customize it by:
-
-1. Creating a `.streamlit/config.toml` file
-2. Adding theme settings:
-```toml
-[theme]
-primaryColor = "#1f77b4"
-backgroundColor = "#ffffff"
-secondaryBackgroundColor = "#f0f2f6"
-textColor = "#262730"
-font = "sans serif"
+Product: Laptop Pro 15 (ID: P001)
+  Cheapest Shop: TechMart - $1150.00
+  Most Expensive Shop: ElectroWorld - $1250.00
+  Price Difference: $100.00
+  Average Price: $1200.00
+  Price Range: $1150.00 - $1250.00
+  Standard Deviation: $50.00
+  Available in 4 shop(s)
 ```
 
-## 📝 Notes
+## License
 
-- The app automatically cleans data upon loading
-- Filters are applied in real-time
-- All visualizations are interactive
-- Data is stored in session state (cleared on refresh)
+This project is provided as-is for educational and commercial use.
 
-## 🆘 Support
 
-For issues or questions:
-1. Check the console output for error messages
-2. Verify your data format matches the requirements
-3. Try loading sample data to test if the app works
-
-## 🚀 Deployment
-
-To deploy this app:
-
-### Streamlit Cloud (Recommended)
-1. Push code to GitHub
-2. Go to [share.streamlit.io](https://share.streamlit.io)
-3. Connect your repository
-4. Deploy!
-
-### Other Platforms
-- **Heroku**: Use Procfile with `web: streamlit run app.py --server.port=$PORT --server.address=0.0.0.0`
-- **Docker**: Create Dockerfile with Streamlit
-- **AWS/GCP/Azure**: Use container services
-
-Enjoy comparing prices! 💰
